@@ -1,5 +1,6 @@
 __author__ = 'riros'
 #coding:UTF-8
+# запускает сборку модулей проекта в разных потоках. Так как в старой Visual Studio нет такой возможности.
 import os
 #import pyodbc
 from  multiprocessing import Pool
