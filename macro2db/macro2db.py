@@ -1,5 +1,9 @@
 __author__ = 'riros'
 # -*- coding: UTF-8 -*-
+
+# многопоточный рефаторинг кода прокета на C++, После которого проект был сокращен на 10000 строк
+#
+
 import pyodbc,datetime,string,re,math,os
 
 from  multiprocessing import Pool
