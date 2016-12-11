@@ -65,6 +65,7 @@ class CBankStatementDoc(CBaseLib):
     """docstring for EDoc"""
     x_PayerINN = ''
     x_PayerAccount = ''
+    x_RecipientAccount = ''
 
     def __init__(self):
         super(CBankStatementDoc, self).__init__()
@@ -154,7 +155,7 @@ class CBankStatement(CBaseLib):
     """docstring for BankStatement"""
     """TODO: настройка кодировки файла"""
 
-    def __init__(self, owner_account):
+    def __init__(self):
         super(CBankStatement, self).__init__()
         self.x_codepage = 'Кодировка=(.*)'
         self.x_version = 'ВерсияФормата=(.*)'
@@ -163,8 +164,6 @@ class CBankStatement(CBaseLib):
         self.x_dateCraate = '\nДатаСоздания=(.*)'
         self.x_timeCreate = '\nВремяСоздания=(.*)'
         self.x_account = 'РасчСчет=(.+)'
-
-        self.owner_account = owner_account
 
         self.Account = CAccount()
         self.bank_statement_docs = iter([CBankStatementDoc])
@@ -207,15 +206,16 @@ class CBankStatement(CBaseLib):
                     c += 1
                 c = 0
                 first = False
-            if doc.x_PayerAccount == self.owner_account:
-                out_r += 1
-            else:
+            if doc.x_RecipientAccount == self.x_account:
                 in_r += 1
+            else:
+                out_r += 1
             for k, v in doc.fields.items():
-                if doc.x_PayerAccount == self.owner_account:
-                    out_sheet.write(out_r, c, doc.__dict__[k])
-                else:
+                if doc.x_RecipientAccount == self.x_account:
                     in_sheet.write(in_r, c, doc.__dict__[k])
+                else:
+                    out_sheet.write(out_r, c, doc.__dict__[k])
+
                 c += 1
             c = 0
         book.close()
@@ -230,6 +230,6 @@ if __name__ == "__main__":
     f = open(filename)
     filedata = f.read()
     f.close()
-    bs = CBankStatement('40702810500200000540')
+    bs = CBankStatement()
     bs.load_class_form_1CClientBankExchange_string(filedata)
     bs.save_documents_to_xlsx(filename + ".xlsx")
